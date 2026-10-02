@@ -54,3 +54,4 @@ through zoom. Image loading and failures display placeholders without blocking
 the rest of the scene. The example picture is a local SVG; browser-supported
 image formats such as PNG, JPEG, and WebP can also be used.
 # music-map
+# music-map
