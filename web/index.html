@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Music map canvas</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <main class="viewport">
+      <canvas aria-label="Coordinate canvas. Drag to pan. Scroll, pinch, or use the buttons to change zoom levels."></canvas>
+      <div class="zoom-controls" role="group" aria-label="Zoom controls">
+        <button id="zoom-out" type="button" aria-label="Zoom out">−</button>
+        <output id="zoom-level" aria-label="Current zoom level">Level 4 / 8</output>
+        <button id="zoom-in" type="button" aria-label="Zoom in">+</button>
+      </div>
+    </main>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
