@@ -1,5 +1,6 @@
 import dot from './dot.mjs';
 import picture from './picture.mjs';
+import { LEVELS } from '../camera.mjs';
 
 // Nested dispatch keeps type-specific loading and drawing out of the scene loop.
 export const objectTypes = {
@@ -24,17 +25,24 @@ export function prepareObjects(rawMap, settings, invalidate) {
     const renderer = resolveType(raw.type);
     const x = Number(raw.x), y = Number(raw.y);
     if (!Number.isFinite(x) || !Number.isFinite(y)) throw new Error(`Invalid coordinates: ${raw.id}`);
-    return { id: raw.id, x, y, renderer, ...renderer.prepare(raw, settings, invalidate) };
+    const hideAtLevel = raw.hideAtLevel == null ? null : Number(raw.hideAtLevel);
+    if (hideAtLevel !== null && (!Number.isInteger(hideAtLevel) || hideAtLevel < 1 || hideAtLevel > LEVELS.length)) {
+      throw new Error(`Invalid hideAtLevel: ${raw.id}`);
+    }
+    return { id: raw.id, x, y, hideAtLevel, renderer, ...renderer.prepare(raw, settings, invalidate) };
   });
 }
 
 export function drawObjects(ctx, objects, camera, width, height) {
   for (const object of objects) {
+    if (object.hideAtLevel !== null && camera.level >= object.hideAtLevel) continue;
+    const scale = object.renderer.screenScale?.(camera) ?? 1;
+    const visible = { ...object, width: object.width * scale, height: object.height * scale };
     const point = camera.toScreen(object.x, object.y, width, height);
-    if (point.x + object.width / 2 < 0 || point.y + object.height / 2 < 0 ||
-        point.x - object.width / 2 > width || point.y - object.height / 2 > height) continue;
+    if (point.x + visible.width / 2 < 0 || point.y + visible.height / 2 < 0 ||
+        point.x - visible.width / 2 > width || point.y - visible.height / 2 > height) continue;
     ctx.save();
-    object.renderer.draw(ctx, object, point);
+    object.renderer.draw(ctx, visible, point);
     ctx.restore();
   }
 }

@@ -79,9 +79,9 @@ function render() {
   ctx.fillText('0', origin.x + 8, origin.y + 16);
 
   drawObjects(ctx, objects, camera, width, height);
-  document.querySelector('#zoom-level').value = `Level ${camera.level} / ${LEVELS.length}`;
-  document.querySelector('#zoom-in').disabled = camera.level === LEVELS.length;
-  document.querySelector('#zoom-out').disabled = camera.level === 1;
+  document.querySelector('#zoom-level').value = `${camera.level} — ×${1 / camera.unitsPerPixel}`;
+  document.querySelector('#zoom-in').disabled = camera.level === 1;
+  document.querySelector('#zoom-out').disabled = camera.level === LEVELS.length;
 }
 
 try {
@@ -90,7 +90,7 @@ try {
   settings['dot-size'] = Number(settings['dot-size']);
   if (!Number.isFinite(settings['dot-size']) || settings['dot-size'] <= 0) throw new Error('Invalid dot-size');
   objects = prepareObjects(rawMap, settings, invalidate);
-  for (const [id, step] of [['zoom-in', 1], ['zoom-out', -1]]) {
+  for (const [id, step] of [['zoom-in', -1], ['zoom-out', 1]]) {
     document.getElementById(id).addEventListener('click', () => {
       const rect = canvas.getBoundingClientRect();
       camera.setLevelAt(camera.level + step, rect.width / 2, rect.height / 2, rect.width, rect.height);
@@ -111,7 +111,7 @@ try {
     wheelDelta += delta;
     // Accumulate small trackpad deltas and limit rapid wheel bursts to steps.
     if (Math.abs(wheelDelta) < 50 || event.timeStamp - lastStepTime < 160) return;
-    camera.setLevelAt(camera.level - Math.sign(wheelDelta),
+    camera.setLevelAt(camera.level + Math.sign(wheelDelta),
       event.clientX - rect.left, event.clientY - rect.top, rect.width, rect.height);
     wheelDelta = 0;
     lastStepTime = event.timeStamp;

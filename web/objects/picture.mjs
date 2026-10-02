@@ -1,4 +1,8 @@
 export default {
+  // Four times the visible world span gives half-sized pictures; cap at half.
+  screenScale(camera) {
+    return Math.max(0.5, 1 / Math.sqrt(camera.unitsPerPixel));
+  },
   prepare(raw, settings, invalidate) {
     if (typeof raw.src !== 'string' || !raw.src.trim()) throw new Error(`Missing picture src: ${raw.id}`);
     const width = Number(raw.width ?? 120);

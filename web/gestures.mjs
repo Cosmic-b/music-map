@@ -36,7 +36,7 @@ export function attachGestures(canvas, camera, invalidate) {
       const steps = Math.trunc(Math.log(current.distance / pinchDistance) / Math.log(pinchStep));
       if (steps) {
         const rect = canvas.getBoundingClientRect();
-        camera.setLevelAt(camera.level + steps, current.x - rect.left,
+        camera.setLevelAt(camera.level - steps, current.x - rect.left,
           current.y - rect.top, rect.width, rect.height);
         pinchDistance = current.distance;
       }

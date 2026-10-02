@@ -1,8 +1,9 @@
 // Pure world/screen math, independent of the DOM and rendering backend.
-export const LEVELS = Object.freeze([8, 4, 2, 1, 0.5, 0.25, 0.125, 0.0625]);
+// World units per CSS pixel: level 1 is the base 50px grid, all others zoom out.
+export const LEVELS = Object.freeze([1, 2, 4, 8]);
 
 export class Camera {
-  constructor() { this.x = 0; this.y = 0; this.level = 4; }
+  constructor() { this.x = 0; this.y = 0; this.level = 1; }
 
   get unitsPerPixel() { return LEVELS[this.level - 1]; }
 
